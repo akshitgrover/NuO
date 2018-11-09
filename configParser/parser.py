@@ -3,7 +3,8 @@ import json
 
 import yaml
 
-import configParser as cp
+import siteData as sd
+import dataInterface as di
 
 def parse(configFilePath):
 
@@ -18,13 +19,10 @@ def parse(configFilePath):
 
 def _placeData(data):
 
-    cp.GLOBALS.update(data["globals"])
-    cp.setNuoDir(data["nuodir"])
-    currentDir = os.getcwd()
+    sd.GLOBALS.update(data["globals"])
+    sd.DATAFILESOBJECT.update(data["datafiles"])
     
-    dataFiles = data["datafiles"]
+    sd.setNuoDir(data["nuodir"])
 
-    for dkey in data["datafiles"].keys():
-        if(not os.path.isabs(dataFiles[dkey])):
-            dataFiles[dkey] = os.path.join(currentDir, dataFiles[dkey])
-        cp.DATAFILES.append(dataFiles[dkey])
+    di.placeData()
+    
