@@ -1,8 +1,9 @@
-from configParser import parser
-from siteData import *
+#! /usr/bin/python
 
-parser.parse("./config.yml")
-print(DATAOBJECT)
-print(GLOBALS)
-print(NUODIR)
-print(DATAFILESOBJECT)
+from configParser import parser
+import siteData as sd
+
+if __name__ == "__main__":
+    print("Starting to parse...", end = "\n\n")
+    parser.parse("./config.yml")
+    sd.siteData()
