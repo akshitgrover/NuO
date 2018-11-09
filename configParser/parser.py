@@ -28,12 +28,3 @@ def _placeData(data):
         if(not os.path.isabs(dataFiles[dkey])):
             dataFiles[dkey] = os.path.join(currentDir, dataFiles[dkey])
         cp.DATAFILES.append(dataFiles[dkey])
-        data = _parseDataFiles(dataFiles[dkey])
-        cp.DATAOBJECT[dkey] = data
-    
-
-def _parseDataFiles(dataFile):
-    
-    file = open(dataFile, "r")
-    dataDict = json.loads(file.read())
-    return dataDict
