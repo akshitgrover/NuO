@@ -22,7 +22,7 @@ def _placeData(data):
     sd.GLOBALS.update(data["globals"])
     sd.DATAFILESOBJECT.update(data["datafiles"])
     
-    sd.setNuoDir(data["nuodir"])
+    sd.setNuoDir(os.path.abspath(data["nuodir"]))
 
     di.placeData()
     
