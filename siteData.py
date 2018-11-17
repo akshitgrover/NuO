@@ -11,6 +11,7 @@ DATAFILESOBJECT = {}
 DATAOBJECT = {}
 
 def setNuoDir(nuoDir):
+    global NUODIR
     NUODIR = nuoDir
 
 def siteData(verbose = False):
