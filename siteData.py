@@ -1,6 +1,6 @@
 import os
 
-__all__ = ["GLOBALS", "NUODIR", "DATAFILESOBJECT", "DATAOBJECT", "setNuoDir", "siteData"]
+__all__ = ["GLOBALS", "NUODIR", "DATAFILESOBJECT", "DATAOBJECT", "DEFINEDOBJECTS", "setNuoDir", "siteData"]
 
 GLOBALS = {}
 
@@ -9,6 +9,8 @@ NUODIR = os.getcwd()
 DATAFILESOBJECT = {}
 
 DATAOBJECT = {}
+
+DEFINEDOBJECTS = {} #Objects defined during parser runtime with "define" directive
 
 def setNuoDir(nuoDir):
     global NUODIR

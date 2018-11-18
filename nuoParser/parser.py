@@ -5,6 +5,7 @@ from siteData import *
 from . import patterns as p
 
 from .handlers import var
+from .handlers import define
 
 def start():
     files = os.listdir(NUODIR)
@@ -27,6 +28,10 @@ def parseFile(file):
             if method == "var":
                 line = var.exp(line)
                 print(line)
+            if method == "define":
+                define.exp(line)
+                print(DEFINEDOBJECTS)
+
     else:
         raise Exception("File '{}' does not exist".format(file))
 
@@ -36,3 +41,6 @@ def detectPattern(expression):
 
     if p._range.search(expression) is not None:
         return "range"
+    
+    if p._define.search(expression) is not None:
+        return "define"
