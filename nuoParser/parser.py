@@ -3,7 +3,7 @@ import re
 
 from siteData import *
 from . import patterns as p
-
+from .action import setAction, takeAction, openFile, closeFile
 from .handlers import var
 from .handlers import define
 
@@ -22,15 +22,25 @@ def parse(files = []):
 def parseFile(file):
     file = os.path.join(NUODIR, file)
     if os.path.exists(file):
+        
+        outputFileName = "build/" + os.path.basename(file).split(".")[0] + ".html"
+        openFile(outputFileName)
+
         f = open(file, "r")
         for line in f.readlines():
             method = detectPattern(line)
             if method == "var":
                 line = var.exp(line)
-                print(line)
+                takeAction(line, file)
+                # print(line)
             if method == "define":
                 define.exp(line)
-                print(DEFINEDOBJECTS)
+                pass
+                # print(DEFINEDOBJECTS)
+            if method == "range":
+                print("range")
+        
+        closeFile()
 
     else:
         raise Exception("File '{}' does not exist".format(file))
