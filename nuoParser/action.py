@@ -57,7 +57,7 @@ def takeAction(line):
             raise Exception("HTML Output: No file is opened to write")
 
         #Initiate write procedure
-        _openedFile.write(line + "\r\n")
+        _openedFile.write(line.strip() + "\r\n")
     
     if(ACTION == "range"):
         
