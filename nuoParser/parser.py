@@ -6,6 +6,7 @@ from . import patterns as p
 from .action import setAction, takeAction, openFile, closeFile
 from .handlers import var
 from .handlers import define
+from .handlers import rangeHandler
 
 def start():
     files = os.listdir(NUODIR)
@@ -29,17 +30,25 @@ def parseFile(file):
         f = open(file, "r")
         for line in f.readlines():
             method = detectPattern(line)
+
             if method == "var":
                 line = var.exp(line)
-                takeAction(line, file)
-                # print(line)
+                takeAction(line)
+
             if method == "define":
                 define.exp(line)
-                pass
-                # print(DEFINEDOBJECTS)
+
             if method == "range":
-                print("range")
-        
+                setAction("range")
+                rangeHandler.startRangeBlock(line)
+
+            if method == "rangeEnd":
+                setAction("rangeEnd")
+                takeAction(line)
+
+            if method == "raw":
+                takeAction(line)
+
         closeFile()
 
     else:
@@ -54,3 +63,8 @@ def detectPattern(expression):
     
     if p._define.search(expression) is not None:
         return "define"
+
+    if p._rangeEnd.search(expression) is not None:
+        return "rangeEnd"
+    
+    return "raw"

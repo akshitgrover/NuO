@@ -1,6 +1,8 @@
 import os
 import shutil
 
+from .handlers import rangeHandler
+
 _openedFile = None
 
 ACTION = "file"
@@ -11,7 +13,7 @@ HTML_DIRECTORY = os.path.abspath("build")
 Description of actions
 
 "file": To write a line to build file"""
-actionSet = {"file"}
+actionSet = {"file", "range", "rangeEnd"}
 
 #Function ot set current action for nuoParser
 def setAction(action):
@@ -42,7 +44,7 @@ def closeFile():
     _openedFile = None #Switch to None object
 
 #Function to execute current action for the nuoParser
-def takeAction(line, *args):
+def takeAction(line):
 
     #Check if current action is file 
     if(ACTION == "file"):
@@ -56,3 +58,11 @@ def takeAction(line, *args):
 
         #Initiate write procedure
         _openedFile.write(line + "\r\n")
+    
+    if(ACTION == "range"):
+        
+        rangeHandler.putLine(line)
+    
+    if(ACTION == "rangeEnd"):
+
+        rangeHandler.endRangeBlock()
