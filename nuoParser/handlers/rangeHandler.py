@@ -4,17 +4,28 @@ import siteData as sd
 from .. import patterns as p
 from .utils import chainedPropertyAccess
 from .. import action
+import json
 
 RANGEOBJECT = {"isSet": False}
+CURRENTRANGEOBJECT = RANGEOBJECT
+RANGECOUNTER = 0
 
 def _setRangeObject(identifier, iterValue):
 
-    global RANGEOBJECT
-    RANGEOBJECT = {}
-    RANGEOBJECT["iterValue"] = iterValue
-    RANGEOBJECT["id"] = identifier
-    RANGEOBJECT["body"] = []
-    RANGEOBJECT["isSet"] = True
+    global RANGEOBJECT, CURRENTRANGEOBJECT, PREVRANGEOBJECT, RANGECOUNTER
+    RANGECOUNTER += 1
+    
+    tempRangeObj = None
+    if(CURRENTRANGEOBJECT["isSet"] is True):
+        CURRENTRANGEOBJECT["body"].append({})
+        tempRangeObj = CURRENTRANGEOBJECT
+        CURRENTRANGEOBJECT = CURRENTRANGEOBJECT["body"][len(CURRENTRANGEOBJECT["body"]) - 1]
+    
+    CURRENTRANGEOBJECT["prev"] = tempRangeObj
+    CURRENTRANGEOBJECT["iterValue"] = iterValue
+    CURRENTRANGEOBJECT["id"] = identifier
+    CURRENTRANGEOBJECT["body"] = []
+    CURRENTRANGEOBJECT["isSet"] = True
 
 def startRangeBlock(expression):
 
@@ -39,16 +50,23 @@ def startRangeBlock(expression):
         _setRangeObject(identifier, iterValue)
 
 def putLine(expression):
-    global RANGEOBJECT
-    RANGEOBJECT["body"].append(expression)
+    global CURRENTRANGEOBJECT
+    CURRENTRANGEOBJECT["body"].append(expression)
 
 def endRangeBlock():
-    
+    global RANGEOBJECT, CURRENTRANGEOBJECT, RANGECOUNTER
+
+    if(RANGECOUNTER is not 1):
+        CURRENTRANGEOBJECT = CURRENTRANGEOBJECT["prev"]
+        action.setAction("range")
+        RANGECOUNTER -= 1
+        return
+
     action.setAction("file")
     RANGETEMPDATA = {}
-
+    RANGECOUNTER -= 1
     def parseRangeExp(id, line):
-
+        
         if(re.compile("{[a-zA-Z_\-\.]}").search(line) is not None):
             modExpression = []
             z = 0
@@ -77,8 +95,11 @@ def endRangeBlock():
             for i in range(rangeObj["iterValue"]):
                 RANGETEMPDATA[rangeObj["id"]] = i
                 for j in rangeObj["body"]:
-                    j = j.strip()
-                    action.takeAction(parseRangeExp(rangeObj["id"], j))
+                    if(type(j) is dict):
+                        parseRange(j)
+                    else:
+                        j = j.strip()
+                        action.takeAction(parseRangeExp(rangeObj["id"], j))
         else:
             RANGETEMPDATA[rangeObj["id"]] = rangeObj["iterValue"]
 
