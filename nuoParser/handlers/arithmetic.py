@@ -19,7 +19,7 @@ def eval(expression):
 			ch = pFix[i]
 			if(not ch.isdigit() and ch is not "" and ch not in operators):
 				ch = ch.split(".")
-				pFix[i] = getValue(ch)
+				pFix[i] = str(getValue(ch))
 		modExpression.append(str(evalPostfix(" ".join(pFix))))
 		z = y
 	modExpression.append(expression[z:])

@@ -110,13 +110,13 @@ def _eval(x, y, op):
 def getValue(ch, rangeData = False, rangeDataObj = {}):
 
     if(rangeData == True and ch[0] in rangeDataObj.keys()):
-        return str(chainedPropertyAccess(rangeDataObj, ch))
+        return chainedPropertyAccess(rangeDataObj, ch)
 
     if(ch[0] in sd.GLOBALS.keys()):
-        return str(chainedPropertyAccess(sd.GLOBALS, ch))
+        return chainedPropertyAccess(sd.GLOBALS, ch)
 
     if(ch[0] in sd.DATAOBJECT.keys()):
-        return str(chainedPropertyAccess(sd.DATAOBJECT, ch))
+        return chainedPropertyAccess(sd.DATAOBJECT, ch)
 
     if(ch[0] in sd.DEFINEDOBJECTS.keys()):
-        return str(chainedPropertyAccess(sd.DEFINEDOBJECTS, ch))    
+        return chainedPropertyAccess(sd.DEFINEDOBJECTS, ch)
