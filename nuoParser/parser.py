@@ -4,9 +4,7 @@ import re
 from siteData import *
 from . import patterns as p
 from .action import setAction, takeAction, openFile, closeFile
-from .handlers import var
-from .handlers import define
-from .handlers import rangeHandler
+from .handlers import var, define, rangeHandler, arithmetic as a
 
 def start():
     files = os.listdir(NUODIR)
@@ -45,6 +43,10 @@ def parseFile(file):
             if method == "rangeEnd":
                 setAction("rangeEnd")
                 takeAction(line)
+            
+            if method == "arithmetic":
+                line = a.eval(line)
+                takeAction(line)
 
             if method == "raw":
                 takeAction(line)
@@ -66,5 +68,8 @@ def detectPattern(expression):
 
     if p._rangeEnd.search(expression) is not None:
         return "rangeEnd"
+
+    if p._arithmetic.search(expression) is not None:
+        return "arithmetic"
     
     return "raw"
