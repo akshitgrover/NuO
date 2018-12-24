@@ -2,7 +2,7 @@ import re
 
 import siteData as sd
 from .. import patterns as p
-from .utils import chainedPropertyAccess
+from .utils import chainedPropertyAccess, getValue
 from .. import action
 import json
 
@@ -34,18 +34,12 @@ def startRangeBlock(expression):
         tempExp = expression[x + 1:y - 1].strip().split()
 
         identifier, iterKey = list(tempExp[1].split(":"))
-        iterKey = iterKey.split(".")
-
-        if(len(iterKey) == 1):
-            root = iterKey[0]
         
-        if(root.isdigit()):
-            iterValue = int(root)
-        elif(root in sd.GLOBALS.keys()):
-            if(len(iterKey) == 1):
-                iterValue = sd.GLOBALS[root]
-            else:
-                iterValue = chainedPropertyAccess(sd.GLOBALS[root], iterKey[1:])
+        if(iterKey.isdigit()):
+            iterValue = int(iterKey)
+        else:
+            iterKey = iterKey.split(".")
+            iterValue = getValue(iterKey)
         
         _setRangeObject(identifier, iterValue)
 
@@ -67,40 +61,56 @@ def endRangeBlock():
     RANGECOUNTER -= 1
     def parseRangeExp(id, line):
         
-        if(re.compile("{[a-zA-Z_\-\.]}").search(line) is not None):
+        if(re.compile("{[a-zA-Z0-9_\-\.]+}").search(line) is not None):
             modExpression = []
             z = 0
 
-            for elem in re.compile("{[a-zA-Z_\-\.]+}").finditer(line):
+            for elem in re.compile("{[a-zA-Z0-9_\-\.]+}").finditer(line):
                 
                 x, y = list(elem.span())
-                tempExp = line[x + 1:y - 1].split(".")
+                tempExp = line[x + 1:y - 1].strip().split(".")
                 modExpression.append(line[z:x])
                 
-                if(len(tempExp) == 1):
-                    modExpression.append(str(RANGETEMPDATA[id]))
-                elif(tempExp[1] == "key"):
-                    modExpression.append(RANGETEMPDATA[id]["key"])
-                elif(tempExp[1] == "value"):
-                    modExpression.append(RANGETEMPDATA[id]["value"])
+                _v = getValue(tempExp, True, RANGETEMPDATA)
+                modExpression.append(str(_v))
+
                 z = y
 
             return "".join(modExpression)
         else:
             return line
 
+    def _parseRangeBody(id, rb):
+        for i in rb:
+            if(type(i) is dict):
+                parseRange(i)
+            else:
+                i = i.strip()
+                action.takeAction(parseRangeExp(id, i))
+
     def parseRange(rangeObj):
 
-        if(type(rangeObj["iterValue"]) is int):
-            for i in range(rangeObj["iterValue"]):
+        t = type(rangeObj["iterValue"])
+        Iter = _getIter(t, rangeObj["iterValue"])
+        if(t is not dict):
+            for i in Iter:
                 RANGETEMPDATA[rangeObj["id"]] = i
-                for j in rangeObj["body"]:
-                    if(type(j) is dict):
-                        parseRange(j)
-                    else:
-                        j = j.strip()
-                        action.takeAction(parseRangeExp(rangeObj["id"], j))
+                _parseRangeBody(rangeObj["id"], rangeObj["body"])                
         else:
-            RANGETEMPDATA[rangeObj["id"]] = rangeObj["iterValue"]
+            RANGETEMPDATA[rangeObj["id"]] = {}
+            for k,v in Iter.items():
+                RANGETEMPDATA[rangeObj["id"]]["k"] = k
+                RANGETEMPDATA[rangeObj["id"]]["v"] = v
+                _parseRangeBody(rangeObj["id"], rangeObj["body"])  
 
     parseRange(RANGEOBJECT)
+    RANGEOBJECT = {"isSet": False}
+    RANGECOUNTER = 0
+    CURRENTRANGEOBJECT = RANGEOBJECT
+
+def _getIter(t, val):
+
+    if(t is int):
+        return range(val)
+    else:
+        return val
