@@ -79,7 +79,6 @@ def evalPostfix(expression):
     stack = Stack()
 
     for op in tempExp:
-        print(stack.stack)
         if(op in operators):
             x, y = stack.pop(), stack.pop()
             if(type(x) is int or x.isdigit()):
