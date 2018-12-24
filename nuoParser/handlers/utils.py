@@ -1,3 +1,4 @@
+import siteData as sd
 class Stack:
 
     def __init__(self):
@@ -106,4 +107,13 @@ def _eval(x, y, op):
     if(op == "*"):
         return y * x
 
-    
+def getValue(ch):
+
+	if(ch[0] in sd.GLOBALS.keys()):
+		return str(chainedPropertyAccess(sd.GLOBALS, ch))
+
+	if(ch[0] in sd.DATAOBJECT.keys()):
+		return str(chainedPropertyAccess(sd.DATAOBJECT, ch))
+	
+	if(ch[0] in sd.DEFINEDOBJECTS.keys()):
+		return str(chainedPropertyAccess(sd.DEFINEDOBJECTS, ch))    

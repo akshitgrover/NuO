@@ -1,6 +1,5 @@
-import siteData as sd
 from .. import patterns as p
-from .utils import chainedPropertyAccess, getPostfix, evalPostfix
+from .utils import chainedPropertyAccess, getPostfix, evalPostfix, getValue
 
 def eval(expression):
 
@@ -20,20 +19,8 @@ def eval(expression):
 			ch = pFix[i]
 			if(not ch.isdigit() and ch is not "" and ch not in operators):
 				ch = ch.split(".")
-				pFix[i] = _getValue(ch)
+				pFix[i] = getValue(ch)
 		modExpression.append(str(evalPostfix(" ".join(pFix))))
 		z = y
 	modExpression.append(expression[z:])
 	return "".join(modExpression)
-
-def _getValue(ch):
-
-	if(ch[0] in sd.GLOBALS.keys()):
-		return str(chainedPropertyAccess(sd.GLOBALS, ch))
-
-	if(ch[0] in sd.DATAOBJECT.keys()):
-		return str(chainedPropertyAccess(sd.DATAOBJECT, ch))
-	
-	if(ch[0] in sd.DEFINEDOBJECTS.keys()):
-		return str(chainedPropertyAccess(sd.DEFINEDOBJECTS, ch))
-
