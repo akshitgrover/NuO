@@ -1,10 +1,8 @@
 import re
 
-import siteData as sd
 from .. import patterns as p
-from .utils import chainedPropertyAccess, getValue
+from .utils import getValue
 from .. import action
-import json
 
 RANGEOBJECT = {"isSet": False}
 CURRENTRANGEOBJECT = RANGEOBJECT
@@ -14,13 +12,13 @@ def _setRangeObject(identifier, iterValue):
 
     global RANGEOBJECT, CURRENTRANGEOBJECT, PREVRANGEOBJECT, RANGECOUNTER
     RANGECOUNTER += 1
-    
+
     tempRangeObj = None
     if(CURRENTRANGEOBJECT["isSet"] is True):
         CURRENTRANGEOBJECT["body"].append({})
         tempRangeObj = CURRENTRANGEOBJECT
         CURRENTRANGEOBJECT = CURRENTRANGEOBJECT["body"][len(CURRENTRANGEOBJECT["body"]) - 1]
-    
+
     CURRENTRANGEOBJECT["prev"] = tempRangeObj
     CURRENTRANGEOBJECT["iterValue"] = iterValue
     CURRENTRANGEOBJECT["id"] = identifier
@@ -34,7 +32,7 @@ def startRangeBlock(expression):
         tempExp = expression[x + 1:y - 1].strip().split()
 
         identifier, iterKey = list(tempExp[1].split(":"))
-        
+
         _setRangeObject(identifier, iterKey)
 
 def putLine(expression):
@@ -53,23 +51,24 @@ def endRangeBlock():
     action.setAction("file")
     RANGETEMPDATA = {}
     RANGECOUNTER -= 1
+
     def parseRangeExp(id, line):
-        
+
         if(re.compile("{[a-zA-Z0-9_\-\.]+}").search(line) is not None):
             modExpression = []
             z = 0
 
             for elem in re.compile("{[a-zA-Z0-9_\-\.]+}").finditer(line):
-                
+
                 x, y = list(elem.span())
                 tempExp = line[x + 1:y - 1].strip().split(".")
                 modExpression.append(line[z:x])
-                
+
                 _v = getValue(tempExp, True, RANGETEMPDATA)
                 modExpression.append(str(_v))
 
                 z = y
-            
+
             modExpression.append(line[z:])
             return "".join(modExpression)
         else:
@@ -96,13 +95,13 @@ def endRangeBlock():
         if(t is not dict):
             for i in Iter:
                 RANGETEMPDATA[rangeObj["id"]] = i
-                _parseRangeBody(rangeObj["id"], rangeObj["body"])                
+                _parseRangeBody(rangeObj["id"], rangeObj["body"])
         else:
             RANGETEMPDATA[rangeObj["id"]] = {}
-            for k,v in Iter.items():
+            for k, v in Iter.items():
                 RANGETEMPDATA[rangeObj["id"]]["k"] = k
                 RANGETEMPDATA[rangeObj["id"]]["v"] = v
-                _parseRangeBody(rangeObj["id"], rangeObj["body"])  
+                _parseRangeBody(rangeObj["id"], rangeObj["body"])
 
     parseRange(RANGEOBJECT)
     RANGEOBJECT = {"isSet": False}
