@@ -10,19 +10,23 @@ def start():
     files = os.listdir(NUODIR)
     parse(files = files)
 
-def parse(files = []):
+def parse(files = [], prefix = NUODIR):
     pattern = re.compile("^.*\.nuo$")
     for file in files:
+        file = os.path.join(prefix, file)
+        if(os.path.isdir(file)):
+            os.mkdir("build/" + file[len(NUODIR):])
+            parse(os.listdir(file), file)
         if pattern.match(file) is not None:
             parseFile(file)
+            pass
         else:
             pass
 
 def parseFile(file):
-    file = os.path.join(NUODIR, file)
     if os.path.exists(file):
-        
-        outputFileName = "build/" + os.path.basename(file).split(".")[0] + ".html"
+        baseName = file[len(NUODIR):]
+        outputFileName = "build/" + baseName.split(".")[0] + ".html"
         openFile(outputFileName)
 
         f = open(file, "r")

@@ -1,4 +1,4 @@
-__all__ = ["[parse"]
+__all__ = ["parse"]
 
 def parse():
     from . import parser
