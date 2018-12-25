@@ -47,7 +47,7 @@ def parseFile(file):
             if method == "rangeEnd":
                 setAction("rangeEnd")
                 takeAction(line)
-            
+
             if method == "arithmetic":
                 line = a.eval(line)
                 takeAction(line)
@@ -66,7 +66,7 @@ def detectPattern(expression):
 
     if p._range.search(expression) is not None:
         return "range"
-    
+
     if p._define.search(expression) is not None:
         return "define"
 
@@ -75,5 +75,5 @@ def detectPattern(expression):
 
     if p._arithmetic.search(expression) is not None:
         return "arithmetic"
-    
+
     return "raw"
