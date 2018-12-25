@@ -69,7 +69,8 @@ def endRangeBlock():
                 modExpression.append(str(_v))
 
                 z = y
-
+            
+            modExpression.append(line[z:])
             return "".join(modExpression)
         else:
             return line
