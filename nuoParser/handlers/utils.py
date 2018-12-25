@@ -3,16 +3,16 @@ class Stack:
 
     def __init__(self):
         self.stack = []
-    
+
     def push(self, x):
         self.stack.append(x)
-    
+
     def pop(self):
         return self.stack.pop()
-    
+
     def top(self):
         return self.stack[len(self.stack) - 1]
-    
+
     def isEmpty(self):
         return True if (len(self.stack) == 0) else False
 
@@ -37,12 +37,12 @@ def chainedPropertyAccess(obj, arr = []):
             return ""
 
 def getPostfix(exp):
-    
+
     postfix = ""
     operators = ["+", "-", "/", "*"]
-    pre = {"+":1, "-":1, "*":2, "/":2}
+    pre = {"+": 1, "-": 1, "*": 2, "/": 2}
     stack = Stack()
-    
+
     for char in exp:
         if(char == '('):
             stack.push(char)
@@ -51,7 +51,7 @@ def getPostfix(exp):
         if(char not in operators and char is not "(" and char is not ")"):
             postfix += char
             continue
-        
+
         if(char == ")"):
             while(stack.top() is not "("):
                 postfix += " " + stack.pop() + " "
@@ -63,14 +63,14 @@ def getPostfix(exp):
             continue
         else:
             while(1):
-                if(stack.top() == "(" or pre[stack.top()] > pre[char]):
+                if(stack.isEmpty() or stack.top() == "(" or pre[stack.top()] < pre[char]):
                     break
                 postfix += " " + stack.pop() + " "
             stack.push(char)
 
     while(not stack.isEmpty()):
         postfix += " " + stack.pop() + " "
-    
+
     return postfix
 
 def evalPostfix(expression):
@@ -85,7 +85,7 @@ def evalPostfix(expression):
             if(type(x) is int or x.isdigit()):
                 stack.push(_eval(int(x), int(y), op))
             else:
-                x = _getValue(x)
+                x = getValue(x)
                 stack.push(_eval(x, y, op))
             continue
         if(op is not " "):
@@ -94,22 +94,22 @@ def evalPostfix(expression):
     return stack.top()
 
 def _eval(x, y, op):
-    
+
     if(op == "+"):
         return y + x
-    
+
     if(op == "-"):
         return y - x
-    
+
     if(op == "/"):
         return int(y / x)
-    
+
     if(op == "*"):
         return y * x
 
 def getValue(ch, rangeData = False, rangeDataObj = {}):
 
-    if(rangeData == True and ch[0] in rangeDataObj.keys()):
+    if(rangeData and ch[0] in rangeDataObj.keys()):
         return chainedPropertyAccess(rangeDataObj, ch)
 
     if(ch[0] in sd.GLOBALS.keys()):
