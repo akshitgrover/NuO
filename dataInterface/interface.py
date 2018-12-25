@@ -5,8 +5,6 @@ import siteData as sd
 
 def placeData():
 
-    currentDir = os.getcwd()
-
     for key in sd.DATAFILESOBJECT.keys():
         value = sd.DATAFILESOBJECT[key]
         value = os.path.abspath(value)
