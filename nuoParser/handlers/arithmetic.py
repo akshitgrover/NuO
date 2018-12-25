@@ -1,5 +1,5 @@
 from .. import patterns as p
-from .utils import chainedPropertyAccess, getPostfix, evalPostfix, getValue
+from .utils import getPostfix, evalPostfix, getValue
 
 def eval(expression):
 
@@ -9,7 +9,7 @@ def eval(expression):
 	for elem in p._arithmetic.finditer(expression):
 
 		x, y = elem.span()
-		tempExp = expression[x + 2:y-2]
+		tempExp = expression[x + 2:y - 2]
 		modExpression.append(expression[z:x])
 
 		pFix = getPostfix(tempExp)
