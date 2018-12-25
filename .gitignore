@@ -8,3 +8,6 @@ datafile1.json
 datafile2.json
 nuoDir
 build
+dist
+MANIFEST
+main.py

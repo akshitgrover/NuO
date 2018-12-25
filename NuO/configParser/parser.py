@@ -2,8 +2,8 @@ import os
 
 import yaml
 
-import siteData as sd
-import dataInterface as di
+import NuO.siteData as sd
+import NuO.dataInterface as di
 
 def parse(configFilePath):
 

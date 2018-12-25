@@ -1,4 +1,4 @@
-import siteData as sd
+import NuO.siteData as sd
 from .. import patterns as p
 from .utils import chainedPropertyAccess
 

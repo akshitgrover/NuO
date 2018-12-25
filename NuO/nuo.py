@@ -3,11 +3,11 @@
 import os
 import shutil
 
-from configParser import parser
-import nuoParser as nps
-import siteData as sd
+from NuO.configParser import parser
+import NuO.nuoParser as nps
+import NuO.siteData as sd
 
-if __name__ == "__main__":
+def main():
     if(os.path.exists("build")):
         shutil.rmtree("build")
     os.mkdir("build")

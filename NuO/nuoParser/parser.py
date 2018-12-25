@@ -1,7 +1,7 @@
 import os
 import re
 
-from siteData import *
+from NuO.siteData import *
 from . import patterns as p
 from .action import setAction, takeAction, openFile, closeFile
 from .handlers import var, define, rangeHandler, arithmetic as a

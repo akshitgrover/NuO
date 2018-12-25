@@ -1,7 +1,7 @@
 import os
 import json
 
-import siteData as sd
+import NuO.siteData as sd
 
 def placeData():
 
