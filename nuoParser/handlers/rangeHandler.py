@@ -35,13 +35,7 @@ def startRangeBlock(expression):
 
         identifier, iterKey = list(tempExp[1].split(":"))
         
-        if(iterKey.isdigit()):
-            iterValue = int(iterKey)
-        else:
-            iterKey = iterKey.split(".")
-            iterValue = getValue(iterKey)
-        
-        _setRangeObject(identifier, iterValue)
+        _setRangeObject(identifier, iterKey)
 
 def putLine(expression):
     global CURRENTRANGEOBJECT
@@ -89,6 +83,12 @@ def endRangeBlock():
                 action.takeAction(parseRangeExp(id, i))
 
     def parseRange(rangeObj):
+
+        if(type(rangeObj["iterValue"]) is str and rangeObj["iterValue"].isdigit()):
+            rangeObj["iterValue"] = int(rangeObj["iterValue"])
+        elif(type(rangeObj["iterValue"]) is str):
+            iterKey = rangeObj["iterValue"].split(".")
+            rangeObj["iterValue"] = getValue(iterKey, True, RANGETEMPDATA)
 
         t = type(rangeObj["iterValue"])
         Iter = _getIter(t, rangeObj["iterValue"])
