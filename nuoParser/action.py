@@ -1,5 +1,4 @@
 import os
-import shutil
 
 from .handlers import rangeHandler
 
@@ -40,29 +39,29 @@ def closeFile():
 
     #Refer to _openedFile varaible outside function scope
     global _openedFile
-    _openedFile.close() #Close file
-    _openedFile = None #Switch to None object
+    _openedFile.close()  #Close file
+    _openedFile = None  #Switch to None object
 
 #Function to execute current action for the nuoParser
 def takeAction(line):
 
-    #Check if current action is file 
+    #Check if current action is file
     if(ACTION == "file"):
 
         #Refer to _openedFile outside function scope
         global _openedFile
-        
+
         #Check if a file is opened
         if(_openedFile is None):
             raise Exception("HTML Output: No file is opened to write")
 
         #Initiate write procedure
         _openedFile.write(line.strip() + "\r\n")
-    
+
     if(ACTION == "range"):
-        
+
         rangeHandler.putLine(line)
-    
+
     if(ACTION == "rangeEnd"):
 
         rangeHandler.endRangeBlock()
