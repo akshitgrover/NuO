@@ -10,7 +10,7 @@ DATAFILESOBJECT = {}
 
 DATAOBJECT = {}
 
-DEFINEDOBJECTS = {} #Objects defined during parser runtime with "define" directive
+DEFINEDOBJECTS = {}  #Objects defined during parser runtime with "define" directive
 
 def setNuoDir(nuoDir):
     global NUODIR
